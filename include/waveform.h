@@ -12,7 +12,7 @@ class WaveformGenerator {
     // 当前相位累加器 (用于生成连续波形)
     uint32_t phaseAccumulator;
     uint32_t phaseIncrement;
-    
+    float amplitude; //振幅系数，0-1
     // 上一次输出的值 (用于三角波方向控制)
     uint8_t lastTriangleValue;
     bool triangleDirectionUp;
@@ -32,7 +32,7 @@ class WaveformGenerator {
     
     // 设置频率 (基于相位累加器)
     void setFrequency(float frequencyHz);
-    void setAmplitude(uint8_t amplitude);
+    void setAmplitude(float amplitude);
     // 根据波形类型获取下一个采样值
     uint8_t getNextSample(WaveformType waveform);
     
@@ -43,7 +43,7 @@ class WaveformGenerator {
     // 获取当前频率设置
     float getCurrentFrequency();
     // 获取当前振幅设置
-    uint8_t getCurrentAmplitude();
+    float getCurrentAmplitude();
 };
 
 #endif

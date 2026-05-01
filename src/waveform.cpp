@@ -15,6 +15,7 @@ void WaveformGenerator::begin() {
   
   // 设置默认频率 (100Hz)
   setFrequency(100.0f);
+  setAmplitude(0.5f); // 默认振幅为0.5*5=2.5V
 }
 
 // 计算正弦波查找表
@@ -25,7 +26,7 @@ void WaveformGenerator::calculateSineTable() {
     
     // 正弦值范围[-1, 1] 映射到 [0, 255]
     // 公式: (sin(x) + 1) * 127.5
-    float sineValue = (sin(rad) + 1.0f) * 127.5f;
+    float sineValue =  (sin(rad) + 1.0f) * 127.5f;
     
     // 限制范围并存储
     sineTable[i] = (uint8_t)constrain(sineValue, MIN_DAC_VALUE, MAX_DAC_VALUE);
@@ -41,13 +42,9 @@ void WaveformGenerator::setFrequency(float frequencyHz) {
 }
 
 //设置振幅
-void WaveformGenerator::setAmplitude(uint8_t amplitude) {
-  // 振幅可以通过调整输出值来实现，这里假设振幅直接影响输出值的范围
-  // 例如，振幅为128时，输出范围为0-128；振幅为255时，输出范围为0-255
-  // 这里我们简单设置一个全局振幅值，可以在getNextSample中根据振幅调整输出值
-  // 注意：实际应用中可能需要更复杂的振幅控制逻辑
-  // 这里我们直接将振幅存储在一个成员变量中，供getNextSample使用
-  // 可以根据需要修改为实际振幅值
+void WaveformGenerator::setAmplitude(float amplitude) {
+  
+  this->amplitude = amplitude;
 }
 
 // 获取下一个正弦值
@@ -56,7 +53,7 @@ uint8_t WaveformGenerator::getNextSineValue() {
   uint32_t index = (phaseAccumulator >> 24) & 0xFF; // 取高8位作为索引
   phaseAccumulator += phaseIncrement;
   
-  return sineTable[index];
+  return (uint8_t)(amplitude * sineTable[index]);
 }
 
 // 获取下一个方波值
@@ -68,9 +65,9 @@ uint8_t WaveformGenerator::getNextSquareValue() {
   
   // 根据相位累加器的最高位决定输出高或低
   if (phaseAccumulator & 0x80000000) {
-    return MAX_DAC_VALUE;  // 高电平
+    return (uint8_t)(amplitude * MAX_DAC_VALUE);  // 高电平
   } else {
-    return MIN_DAC_VALUE;  // 低电平
+    return (uint8_t)(amplitude * MIN_DAC_VALUE);  // 低电平
   }
 }
 
@@ -101,7 +98,7 @@ uint8_t WaveformGenerator::getNextTriangleValue() {
     value = map(phase, threeQuarter, 0x7FFFFFFF, MIN_DAC_VALUE, MAX_DAC_VALUE);
   }
   
-  return (uint8_t)value;
+  return (uint8_t)(value * amplitude);
 }
 
 // 根据波形类型获取下一个采样值
@@ -151,9 +148,7 @@ float WaveformGenerator::getCurrentFrequency() {
 }
 
 // 获取当前振幅
-uint8_t WaveformGenerator::getCurrentAmplitude() {
-  // 振幅可以通过调整输出值来实现，这里假设振幅直接影响输出值的范围
-  // 例如，振幅为128时，输出范围为0-128；振幅为255时，输出范围为0-255
-  // 这里我们简单返回当前振幅设置，可以在getNextSample中根据振幅调整输出值
-  return MAX_DAC_VALUE; // 默认全振幅输出，可以根据需要修改为实际振幅值
+float WaveformGenerator::getCurrentAmplitude() {
+  // 返回当前振幅设置
+  return this->amplitude;
 }

@@ -28,7 +28,7 @@ const long debounceDelay = 50; // 消抖时间 (毫秒)
 
 // ============ 函数声明 ============
 void setupPins();
-void updateAmplitudeFromPot();
+void updateAmplitude();
 void printWaveformInfo();
 
 // ============ 初始化 ============
@@ -48,7 +48,6 @@ void setup() {
   
   // 初始设置
   currentWaveType = WAVE_SQUARE;
-  updateAmplitudeFromPot();
   
   Serial.println(F("初始化完成"));
   printWaveformInfo();
@@ -88,7 +87,7 @@ void loop() {
     static unsigned long lastAmpUpdate = 0;
     if (currentTime - lastAmpUpdate > 50000) {  // 50ms
       lastAmpUpdate = currentTime;
-      updateAmplitudeFromPot();
+      updateAmplitude();
     }
     
     // 3. 生成下一个采样点并输出
@@ -116,11 +115,11 @@ void setupPins() {
  * 从电位器读取并更新幅度
  * 幅度范围: 0 到 255 (8位DAC)
  */
-void updateAmplitudeFromPot() {
+void updateAmplitude() {
   int potValue = analogRead(AMP_POT_PIN);
   
   // 将0-1023映射到0-255
-  uint8_t amplitude = map(potValue, 0, 1023, 0, 255);
+  float amplitude = 0.8* float(potValue)/511.0 +0.2; // 0.2-1.0之间线性变化
   
   waveformGen.setAmplitude(amplitude);
 }
