@@ -15,7 +15,7 @@ void WaveformGenerator::begin() {
   
   // 设置默认频率 (100Hz)
   setFrequency(100.0f);
-  setAmplitude(0.5f); // 默认振幅为0.5*5=2.5V
+  setAmplitude(1.0f); // 默认峰峰值为1.0 * 5  V= 5V
 }
 
 // 计算正弦波查找表
@@ -32,7 +32,16 @@ void WaveformGenerator::calculateSineTable() {
     sineTable[i] = (uint8_t)constrain(sineValue, MIN_DAC_VALUE, MAX_DAC_VALUE);
   }
 }
+// 获取当前频率
+float WaveformGenerator::getCurrentFrequency() {
+  return 100.0f; // 目前固定为100Hz，可以根据需要扩展为动态频率
+}
 
+// 获取当前振幅
+float WaveformGenerator::getCurrentAmplitude() {
+  // 返回当前振幅设置
+  return this->amplitude;
+}
 // 设置频率 (使用相位累加器)
 void WaveformGenerator::setFrequency(float frequencyHz) {
   // 相位增量 = (期望频率 * 2^32) / 采样率
@@ -141,14 +150,3 @@ WaveformType WaveformGenerator::getWaveformType() {
 }
 
 
-// 获取当前频率
-float WaveformGenerator::getCurrentFrequency() {
-  // 从相位增量反算频率
-  return (phaseIncrement * SAMPLE_RATE) / powf(2.0f, 32);
-}
-
-// 获取当前振幅
-float WaveformGenerator::getCurrentAmplitude() {
-  // 返回当前振幅设置
-  return this->amplitude;
-}

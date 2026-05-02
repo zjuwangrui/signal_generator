@@ -9,10 +9,10 @@
 #define DAC_DATA_PINS    8      // 数据线数量
 
 // 波形选择引脚
-#define WAVE_SELECT_PIN  1     // 数字输入读取波形选择
+#define WAVE_SELECT_PIN  10     // 数字输入读取波形选择
 
 // 幅度控制引脚
-#define AMP_POT_PIN      A1     // 电位器调节幅度
+#define AMP_POT_PIN      A0     // 电位器调节幅度
 
 // ============ 波形参数 ============
 #define SAMPLE_RATE      1000   // 采样率(Hz) - 每秒钟输出的点数

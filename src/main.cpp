@@ -35,7 +35,7 @@ void printWaveformInfo();
 void setup() {
   // 初始化串口
   Serial.begin(9600);
-  Serial.println(F("=== Arduino 波形发生器 ==="));
+  Serial.println(F("=== Arduino wave signal generator ==="));
   
   // 初始化引脚
   setupPins();
@@ -49,7 +49,7 @@ void setup() {
   // 初始设置
   currentWaveType = WAVE_SQUARE;
   
-  Serial.println(F("初始化完成"));
+  Serial.println(F("Initialization complete"));
   printWaveformInfo();
 }
 
@@ -94,8 +94,8 @@ void loop() {
     uint8_t sample = waveformGen.getNextSample(currentWaveType);
     dacOutput.write(sample);
     
-   
-    Serial.println(sample);
+    //Serial.print(F("Output sample: "));
+    //Serial.println(sample);
   }
 }
 
@@ -128,27 +128,28 @@ void updateAmplitude() {
  * 打印当前波形信息
  */
 void printWaveformInfo() {
-  Serial.print(F("当前波形: "));
+  // Serial.print(F("current wavetype: "));
   
-  switch (currentWaveType) {
-    case WAVE_SQUARE:
-      Serial.print(F("方波"));
-      break;
-    case WAVE_TRIANGLE:
-      Serial.print(F("三角波"));
-      break;
-    case WAVE_SINE:
-      Serial.print(F("正弦波"));
-      break;
-    default:
-      Serial.print(F("未知"));
-  }
+  // switch (currentWaveType) {
+  //   case WAVE_SQUARE:
+  //     Serial.print(F("square"));
+  //     break;
+  //   case WAVE_TRIANGLE:
+  //     Serial.print(F("triangle"));
+  //     break;
+  //   case WAVE_SINE:
+  //     Serial.print(F("sine"));
+  //     break;
+  //   default:
+  //     Serial.print(F("unknown"));
+  // }
   
-  Serial.print(F(", 频率: "));
-  Serial.print(waveformGen.getCurrentFrequency());
-  Serial.println(F(" Hz"));
+  // Serial.print(F(", frequency: "));
+  // Serial.print(waveformGen.getCurrentFrequency());
+  // Serial.println(F(" Hz"));
 
-  Serial.print(F("幅度: "));
-  Serial.println(waveformGen.getCurrentAmplitude());
-  Serial.println(F("mV\n========================="));
+  // Serial.print(F("amplitude: "));
+  // waveformGen.getCurrentAmplitude();
+  waveformGen.getCurrentFrequency();
+  Serial.println(F("\n========================="));
 }
