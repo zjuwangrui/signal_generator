@@ -52,7 +52,12 @@ void WaveformGenerator::setFrequency(float frequencyHz) {
 
 //设置振幅
 void WaveformGenerator::setAmplitude(float amplitude) {
-  
+  if( amplitude != this->amplitude){
+    Serial.print(F("Amplitude changed: "));
+    Serial.print(this->amplitude);
+    Serial.print(F(" -> "));
+    Serial.println(amplitude);
+  }
   this->amplitude = amplitude;
 }
 
@@ -73,7 +78,7 @@ uint8_t WaveformGenerator::getNextSquareValue() {
   phaseAccumulator += phaseIncrement;
   
   // 根据相位累加器的最高位决定输出高或低
-  if (phaseAccumulator & 0x80000000) {
+  if (phaseAccumulator & halfPeriod) {
     return (uint8_t)(amplitude * MAX_DAC_VALUE);  // 高电平
   } else {
     return (uint8_t)(amplitude * MIN_DAC_VALUE);  // 低电平
@@ -149,4 +154,46 @@ WaveformType WaveformGenerator::getWaveformType() {
   return waveform;
 }
 
+void WaveformGenerator::outputSquare(){
+  digitalWrite(SQUARE_PIN,HIGH);
+  delay(SQUARE_T/2);
+  digitalWrite(SQUARE_PIN,LOW);
+  delay(SQUARE_T/2);
+}
 
+void WaveformGenerator::outputTriangle(){
+  uint8_t maxvalue = uint8_t(MAX_DAC_VALUE*amplitude);
+  for(int i =0;i<maxvalue ;i++){
+    PORTD = i;
+    //delay(1000/SAMPLE_RATE);
+    for(int i = maxvalue;i>0;i--){
+      PORTD = i;
+      // delay(1000/SAMPLE_RATE);
+    }
+  }
+}
+
+void WaveformGenerator::outputSine(){
+  for(int i =0;i<TABLE_SIZE;i++){
+    PORTD = (uint8_t)(amplitude * sineTable[i]);
+    delay(1000/SAMPLE_RATE);
+  }
+}
+
+void WaveformGenerator::output(WaveformType waveform){
+  switch (waveform)
+  {
+  case WAVE_SQUARE:
+    outputSquare();
+    break;
+  case WAVE_TRIANGLE:
+    outputTriangle();
+    break;
+  case WAVE_SINE:
+    outputSine();
+    break;
+  default:
+    outputSquare();
+    break;
+  }
+}

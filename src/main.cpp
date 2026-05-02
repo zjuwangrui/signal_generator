@@ -90,13 +90,11 @@ void loop() {
       updateAmplitude();
     }
     
-    // 3. 生成下一个采样点并输出
-    uint8_t sample = waveformGen.getNextSample(currentWaveType);
-    dacOutput.write(sample);
-    
-    //Serial.print(F("Output sample: "));
-    //Serial.println(sample);
+    //3.生成波形
+    waveformGen.output(currentWaveType);
   }
+
+ 
 }
 
 // ============ 辅助函数 ============
@@ -109,6 +107,7 @@ void setupPins() {
   // 设置波形选择引脚为输入
   pinMode(WAVE_SELECT_PIN, INPUT_PULLUP);
   pinMode(AMP_POT_PIN, INPUT);
+  pinMode(SQUARE_PIN, OUTPUT);
 }
 
 /**
@@ -119,7 +118,7 @@ void updateAmplitude() {
   int potValue = analogRead(AMP_POT_PIN);
   
   // 将0-1023映射到0-255
-  float amplitude = 0.8* float(potValue)/511.0 +0.2; // 0.2-1.0之间线性变化
+  float amplitude = 0.8* float(potValue)/511.0 +0.2; // 0.2-1.0之间线性变化，真实振幅0.5-2V可调，峰峰值1-4V可调
   
   waveformGen.setAmplitude(amplitude);
 }
@@ -128,28 +127,28 @@ void updateAmplitude() {
  * 打印当前波形信息
  */
 void printWaveformInfo() {
-  // Serial.print(F("current wavetype: "));
+  Serial.print(F("current wavetype: "));
   
-  // switch (currentWaveType) {
-  //   case WAVE_SQUARE:
-  //     Serial.print(F("square"));
-  //     break;
-  //   case WAVE_TRIANGLE:
-  //     Serial.print(F("triangle"));
-  //     break;
-  //   case WAVE_SINE:
-  //     Serial.print(F("sine"));
-  //     break;
-  //   default:
-  //     Serial.print(F("unknown"));
-  // }
+  switch (currentWaveType) {
+    case WAVE_SQUARE:
+      Serial.print(F("square"));
+      break;
+    case WAVE_TRIANGLE:
+      Serial.print(F("triangle"));
+      break;
+    case WAVE_SINE:
+      Serial.print(F("sine"));
+      break;
+    default:
+      Serial.print(F("unknown"));
+  }
   
   // Serial.print(F(", frequency: "));
   // Serial.print(waveformGen.getCurrentFrequency());
   // Serial.println(F(" Hz"));
 
   // Serial.print(F("amplitude: "));
-  // waveformGen.getCurrentAmplitude();
-  waveformGen.getCurrentFrequency();
-  Serial.println(F("\n========================="));
+  //waveformGen.getCurrentAmplitude();
+  
+  Serial.println(F("\n"));
 }

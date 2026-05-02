@@ -22,6 +22,9 @@ class WaveformGenerator {
     uint8_t getNextSineValue();
     uint8_t getNextSquareValue();
     uint8_t getNextTriangleValue();
+    void outputSquare();
+    void outputTriangle();
+    void outputSine();
 
   public:
     // 构造函数
@@ -33,6 +36,7 @@ class WaveformGenerator {
     // 设置频率 (基于相位累加器)
     void setFrequency(float frequencyHz);
     void setAmplitude(float amplitude);
+    void output(WaveformType waveform);
     // 根据波形类型获取下一个采样值
     uint8_t getNextSample(WaveformType waveform);
     
