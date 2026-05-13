@@ -34,7 +34,7 @@ void printWaveformInfo();
 // ============ 初始化 ============
 void setup() {
   // 初始化串口
-  Serial.begin(9600);
+  //Serial.begin(9600);
   Serial.println(F("=== Arduino wave signal generator ==="));
   
   // 初始化引脚
@@ -46,8 +46,7 @@ void setup() {
   // 初始化DAC
   dacOutput.begin();
   
-  // 初始设置
-  currentWaveType = WAVE_SQUARE;
+
   
   Serial.println(F("Initialization complete"));
   printWaveformInfo();
@@ -120,7 +119,8 @@ void updateAmplitude() {
   // 将0-1023映射到0-255
   float amplitude = 0.8* float(potValue)/511.0 +0.2; // 0.2-1.0之间线性变化，真实振幅0.5-2V可调，峰峰值1-4V可调
   
-  waveformGen.setAmplitude(amplitude);
+  //waveformGen.setAmplitude(amplitude);
+  waveformGen.setAmplitude(float(1.0f)); // 0-1之间线性变化，真实振幅0-5V可调，峰峰值0-5V可调
 }
 
 /**

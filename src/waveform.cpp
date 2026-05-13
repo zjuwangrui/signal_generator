@@ -34,7 +34,7 @@ void WaveformGenerator::calculateSineTable() {
 }
 // 获取当前频率
 float WaveformGenerator::getCurrentFrequency() {
-  return 100.0f; // 目前固定为100Hz，可以根据需要扩展为动态频率
+  return 100.0f; // 目前固定为100Hz
 }
 
 // 获取当前振幅
@@ -156,8 +156,10 @@ WaveformType WaveformGenerator::getWaveformType() {
 
 void WaveformGenerator::outputSquare(){
   digitalWrite(SQUARE_PIN,HIGH);
+  PORTD = MAX_DAC_VALUE;
   delay(SQUARE_T/2);
   digitalWrite(SQUARE_PIN,LOW);
+  PORTD = MIN_DAC_VALUE;
   delay(SQUARE_T/2);
 }
 
@@ -165,10 +167,10 @@ void WaveformGenerator::outputTriangle(){
   uint8_t maxvalue = uint8_t(MAX_DAC_VALUE*amplitude);
   for(int i =0;i<maxvalue ;i++){
     PORTD = i;
-    //delay(1000/SAMPLE_RATE);
+    delay(1000/SAMPLE_RATE);
     for(int i = maxvalue;i>0;i--){
       PORTD = i;
-      // delay(1000/SAMPLE_RATE);
+      delay(1000/SAMPLE_RATE);
     }
   }
 }

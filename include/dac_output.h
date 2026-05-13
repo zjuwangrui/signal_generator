@@ -22,10 +22,7 @@ class DACOutput {
     
     // 输出8位数据到DAC
     void write(uint8_t value) {
-      // 快速串行输出
-      for (int i = 0; i < pinCount; i++) {
-        digitalWrite(basePin + i, (value >> i) & 0x01);
-      }
+      PORTD = value; // 直接写入PORTD寄存器，假设DAC连接在D0-D7
     }
 
 };
